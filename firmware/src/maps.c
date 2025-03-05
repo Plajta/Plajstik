@@ -1,29 +1,23 @@
 #include <string.h>
 #include <stdint.h>
+#include "maps.h"
 
-int8_t find_mapping(char const* input) {
-  if (strcmp(input, "a") == 0) return 0;
-  if (strcmp(input, "b") == 0) return 1;
-  if (strcmp(input, "x") == 0) return 3;
-  if (strcmp(input, "y") == 0) return 4;
-  if (strcmp(input, "l1") == 0) return 6;
-  if (strcmp(input, "r1") == 0) return 7;
-  if (strcmp(input, "l2") == 0) return 8;
-  if (strcmp(input, "r2") == 0) return 9;
-  if (strcmp(input, "select") == 0) return 10;
-  if (strcmp(input, "start") == 0) return 11;
-  if (strcmp(input, "home") == 0) return 12;
-  if (strcmp(input, "l3") == 0) return 13;
-  if (strcmp(input, "r3") == 0) return 14;
-  return -1;
+uint8_t find_mapping(char const* input) {
+    for (int i = 0; i < main_mappings_size; ++i) {
+        if (strcmp(input, main_mappings[i].key) == 0) {
+            return main_mappings[i].value;
+        }
+    }
+    return -1;
 };
 
-int8_t find_dpad(char const* input) {
-  if (strcmp(input, "dpad_u") == 0) return 0;
-  if (strcmp(input, "dpad_r") == 0) return 1;
-  if (strcmp(input, "dpad_d") == 0) return 2;
-  if (strcmp(input, "dpad_l") == 0) return 3;
-  return -1;
+uint8_t find_dpad(char const* input) {
+    for (int i = 0; i < dpad_mappings_size; ++i) {
+        if (strcmp(input, dpad_mappings[i].key) == 0) {
+            return dpad_mappings[i].value;
+        }
+    }
+    return -1;
 };
 
 uint8_t find_dpad_dir(uint8_t* dpad){

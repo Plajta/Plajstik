@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.13)
 # (note this can come from environment, CMake cache etc)
 set(PICO_SDK_FETCH_FROM_GIT on)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(pico_sdk_import.cmake)
 
 project(plajstik_controller C CXX ASM)
