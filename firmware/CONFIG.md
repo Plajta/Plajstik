@@ -2,28 +2,28 @@
 Completely configured, completely hypothetical config JSON:
 ```json
 {
-  "version": 1,
+  "version": 2,
   "buttons": {
-    "select": 0,
-    "start": 1,
-    "home": 2,
+    "0": "select",
+    "1": "start",
+    "2": "home",
 
-    "a": 3,
-    "b": 4,
-    "x": 5,
-    "y": 6,
+    "3": "a",
+    "4": "b",
+    "5": "x",
+    "6": "y",
 
-    "r1": 7,
-    "l1": 8,
-    "r2": 9,
-    "l2": 10,
-    "r3": 11,
-    "l3": 12,
+    "7": "r1",
+    "8": "l1",
+    "9": "r2",
+    "10": "l2",
+    "11": "r3",
+    "12": "l3",
 
-    "dpad_u": 13,
-    "dpad_r": 14,
-    "dpad_d": 15,
-    "dpad_l": 16
+    "13": "dpad_u",
+    "14": "dpad_r",
+    "15": "dpad_d",
+    "16": "dpad_l"
   },
   "deadzone": 16.0,
   "axes": {
@@ -46,7 +46,7 @@ List of button names and to what GPIOs are they bound to
 
 Example:
 ```
-"l3": 3
+"3": "l3"
 ```
 Button L3 (Left stick button) is bound to GPIO 3.
 

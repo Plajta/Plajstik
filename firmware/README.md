@@ -37,17 +37,17 @@ Keystrokes are shown inside like this: `<CTRL + D>`
 Connected
 LOAD<CTRL + D>
 {
-  "version": 1,
+  "version": 2,
   "buttons": {
-    "select": 0,
-    "start": 1,
-    "b": 3,
-    "a": 4,
-    "l3": 5,
-    "dpad_u": 6,
-    "dpad_r": 7,
-    "dpad_d": 8,
-    "dpad_l": 9
+    "0": "select",
+    "1": "start",
+    "3": "b",
+    "4": "a",
+    "5": "l3",
+    "6": "dpad_u",
+    "7": "dpad_r",
+    "8": "dpad_d",
+    "9": "dpad_l"
   },
   "deadzone": 16.0,
   "axes": {
@@ -55,7 +55,7 @@ LOAD<CTRL + D>
     "y": 0
   },
   "multiplier": {
-    "x": -1.0,
+    "x": 1.0,
     "y": 1.0
   }
 }
@@ -64,17 +64,17 @@ LOAD<CTRL + D>
 ```
 Connected
 {
-  "version": 1,
+  "version": 2,
   "buttons": {
-    "select": 0,
-    "start": 1,
-    "b": 3,
-    "a": 4,
-    "l3": 5,
-    "dpad_u": 6,
-    "dpad_r": 7,
-    "dpad_d": 8,
-    "dpad_l": 9
+    "0": "select",
+    "1": "start",
+    "3": "b",
+    "4": "a",
+    "5": "l3",
+    "6": "dpad_u",
+    "7": "dpad_r",
+    "8": "dpad_d",
+    "9": "dpad_l"
   },
   "deadzone": 16.0,
   "axes": {
@@ -82,7 +82,7 @@ Connected
     "y": 0
   },
   "multiplier": {
-    "x": -1.0,
+    "x": 1.0,
     "y": 1.0
   }
 }<CTRL + D>

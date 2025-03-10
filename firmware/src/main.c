@@ -61,12 +61,12 @@ bool send_config = false;
 
 uint LED_PIN = PICO_DEFAULT_LED_PIN;
 
-char default_json[] = "{\"version\":1,\"buttons\":{\"select\":0,\"start\":1,\"b\":3,\"a\":4,\"l3\":5,\"dpad_u\":6,\"dpad_r\":7,\"dpad_d\":8,\"dpad_l\":9},\"deadzone\":16.0,\"axes\":{\"x\":1,\"y\":0},\"multiplier\":{\"x\":1.0,\"y\":1.0}}";
+char default_json[] = "{\"version\":2,\"buttons\":{\"0\":\"select\",\"1\":\"start\",\"3\":\"b\",\"4\":\"a\",\"5\":\"l3\",\"6\":\"dpad_u\",\"7\":\"dpad_r\",\"8\":\"dpad_d\",\"9\":\"dpad_l\"},\"deadzone\":16.0,\"axes\":{\"x\":1,\"y\":0},\"multiplier\":{\"x\":1.0,\"y\":1.0}}";
 
 static_assert(sizeof(default_json) / sizeof(default_json[0]) < BUF_SIZE, "BUF_SIZE mismatch!"); // Ensure that default_json never is more than 1024 otherwise risk flash damage from constant rewriting
 
-int8_t keymap[15] = {[0 ... 14] = -1};
-int8_t dpad_keymap[4] = {[0 ... 3] = -1}; // Up, right, down, left
+int8_t keymap[26] = {[0 ... 25] = -1};
+uint32_t dpad_mask = 0;
 
 int8_t x_adc = -1, y_adc = -1;
 
@@ -102,23 +102,13 @@ int main(void)
 
   memcpy(runtime_json, persistent_json, BUF_SIZE); // Copy because TinyJSON destroys the original for some reason
   runtime_json[BUF_SIZE-1] = '\0';
-  json_setup(runtime_json, keymap, dpad_keymap, &deadzone, &x_adc, &y_adc, &x_multiplier, &y_multiplier);
-
-
+  json_setup(runtime_json, keymap, &dpad_mask, &deadzone, &x_adc, &y_adc, &x_multiplier, &y_multiplier);
 
   for (int i = 0; i < sizeof(keymap)/sizeof(keymap[0]); i++){
     if (keymap[i] > -1){
-      gpio_init(keymap[i]);
-      gpio_set_dir(keymap[i], GPIO_IN);
-      gpio_pull_up(keymap[i]);
-    }
-  }
-
-  for (int i = 0; i < sizeof(dpad_keymap)/sizeof(dpad_keymap[0]); i++){
-    if (dpad_keymap[i] > -1){
-      gpio_init(dpad_keymap[i]);
-      gpio_set_dir(dpad_keymap[i], GPIO_IN);
-      gpio_pull_up(dpad_keymap[i]);
+      gpio_init(i);
+      gpio_set_dir(i, GPIO_IN);
+      gpio_pull_up(i);
     }
   }
 
@@ -149,21 +139,25 @@ void tud_suspend_cb(bool remote_wakeup_en)
   (void) remote_wakeup_en;
 }
 
-uint32_t get_all_buttons(){
-  uint32_t output = 0;
+void get_all_buttons(uint32_t *buttons, uint8_t *dpad){
   for (int i = 0; i < sizeof(keymap)/sizeof(keymap[0]); i++){
     if (keymap[i] > -1) {
-      output |= (!gpio_get(keymap[i]) << i); // Negate because of pull ups on the pins
+
+      if (dpad_mask & (1 << i)){
+        *dpad |= (!gpio_get(i) << keymap[i]); // Invert because of pull-up
+      }
+      else{
+        *buttons |= (!gpio_get(i) << keymap[i]); // Invert because of pull-up
+      }
     }
   }
-  return output;
 }
 
 //--------------------------------------------------------------------+
 // USB HID
 //--------------------------------------------------------------------+
 
-static void send_hid_report(uint32_t btn)
+static void send_hid_report()
 {
   // skip if hid is not ready yet
   if ( !tud_hid_ready() ) return;
@@ -173,14 +167,6 @@ static void send_hid_report(uint32_t btn)
     .x   = 0, .y = 0, .z = 0, .rz = 0, .rx = 0, .ry = 0,
     .hat = 0, .buttons = 0
   };
-
-  uint8_t dpad_out[4] = {0}; // Up, right, down, left
-
-  for (uint8_t i = 0; i < 4; i++){
-    if (dpad_keymap[i] > -1){
-      dpad_out[i] = !gpio_get(dpad_keymap[i]); // Invert because of pull-up
-    }
-  }
 
   int8_t x = 0, y = 0;
   if (x_adc > -1){
@@ -201,8 +187,11 @@ static void send_hid_report(uint32_t btn)
   else
     report.x = report.y = 0;
 
-  report.hat = find_dpad_dir(dpad_out);
-  report.buttons = btn;
+  uint32_t buttons = 0;
+  uint8_t dpad = 0;
+  get_all_buttons(&buttons, &dpad);
+  report.hat = dpad_lookup[dpad];
+  report.buttons = buttons;
   tud_hid_report(REPORT_ID_GAMEPAD, &report, sizeof(report));
 }
 
@@ -218,18 +207,11 @@ void hid_task(void)
   if ( board_millis() - start_ms < interval_ms) return; // not enough time
   start_ms += interval_ms;
 
-  uint32_t const btn = get_all_buttons();
-
   // Remote wakeup
-  if ( tud_suspended() && btn > 0 )
-  {
-    // Wake up host if we are in suspend mode
-    // and REMOTE_WAKEUP feature is enabled by host
-    tud_remote_wakeup();
-  }else
+  if ( !tud_suspended())
   {
     // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-    send_hid_report(btn);
+    send_hid_report();
   }
 }
 
