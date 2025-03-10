@@ -7,6 +7,7 @@
 #include "class/cdc/cdc_device.h"
 #include "hardware/adc.h"
 #include "hardware/flash.h"
+#include "assert.h"
 
 // USB related includes
 #include "bsp/board.h"

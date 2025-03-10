@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include <string.h>
 #define JSON_VERSION 1
 
 size_t strlen_s(const char *str, size_t max_len);
