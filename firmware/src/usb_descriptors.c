@@ -192,7 +192,7 @@ char const* string_desc_arr [] =
 {
   (const char[]) { 0x09, 0x04 }, // 0: is supported language is English (0x0409)
   "Plajta Corp.",                             // 1: Manufacturer
-  "Plajstik one-hand controller", // 2: Product
+  "Plajstick One-Hand Controller", // 2: Product
   serial,                        // 3: Serials, uses the flash ID
   "Plajstik serial",          // 4: CDC Interface
 };
