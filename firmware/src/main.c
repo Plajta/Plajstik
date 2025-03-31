@@ -61,7 +61,7 @@ bool send_config = false;
 
 uint LED_PIN = PICO_DEFAULT_LED_PIN;
 
-char default_json[] = "{\"version\":2,\"buttons\":{\"0\":\"select\",\"1\":\"start\",\"3\":\"b\",\"4\":\"a\",\"5\":\"l3\",\"6\":\"dpad_u\",\"7\":\"dpad_r\",\"8\":\"dpad_d\",\"9\":\"dpad_l\"},\"deadzone\":16.0,\"axes\":{\"x\":1,\"y\":0},\"multiplier\":{\"x\":1.0,\"y\":1.0}}";
+char default_json[] = "{\"version\":2,\"buttons\":{\"12\":\"select\",\"13\":\"start\",\"14\":\"a\",\"15\":\"b\",\"16\":\"x\",\"17\":\"y\",\"22\":\"home\",\"6\":\"dpad_u\",\"7\":\"dpad_r\",\"8\":\"dpad_d\",\"9\":\"dpad_l\",\"20\":\"a\"},\"deadzone\":16.0,\"axes\":{\"x\":2,\"y\":0},\"multiplier\":{\"x\":1.0,\"y\":1.0}}";
 
 static_assert(sizeof(default_json) / sizeof(default_json[0]) < BUF_SIZE, "BUF_SIZE mismatch!"); // Ensure that default_json never is more than 1024 otherwise risk flash damage from constant rewriting
 
